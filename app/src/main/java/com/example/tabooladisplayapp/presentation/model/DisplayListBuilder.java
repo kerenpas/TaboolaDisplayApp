@@ -6,15 +6,19 @@ import java.util.List;
 
 public class DisplayListBuilder {
     private static final int TOTAL_CELLS = 10;
-    private static final int[] EMPTY_POSITIONS = {2, 9}; // 0-based indices
+
+    private static final int TABOOLA_WIDGET_POSITION = 2;
+    private static final int TABOOLA_FEED_POSITION = 9;
 
     public List<Cell> build(List<FeedItem> items) {
         List<Cell> cells = new ArrayList<>(TOTAL_CELLS);
         int itemIndex = 0;
 
         for (int i = 0; i < TOTAL_CELLS; i++) {
-            if (isEmptyPosition(i)) {
-                cells.add(new Cell.EmptyCell());
+            if (i == TABOOLA_WIDGET_POSITION) {
+                cells.add(new Cell.TaboolaWidgetCell());
+            } else if (i == TABOOLA_FEED_POSITION) {
+                cells.add(new Cell.TaboolaFeedCell());
             } else if (itemIndex < items.size()) {
                 FeedItem item = items.get(itemIndex++);
                 cells.add(new Cell.DataCell(
@@ -28,12 +32,5 @@ public class DisplayListBuilder {
         }
 
         return cells;
-    }
-
-    private boolean isEmptyPosition(int position) {
-        for (int emptyPos : EMPTY_POSITIONS) {
-            if (position == emptyPos) return true;
-        }
-        return false;
     }
 }

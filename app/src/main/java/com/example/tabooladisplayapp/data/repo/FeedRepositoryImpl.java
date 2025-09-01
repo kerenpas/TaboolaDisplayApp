@@ -53,7 +53,7 @@ public class FeedRepositoryImpl implements GetFeedUseCase {
                         .map(FeedMappers::dtoToEntity)
                         .collect(Collectors.toList());
 
-                    dao.deleteAll();
+                   // dao.deleteAll();
                     dao.insertAll(entities);
 
                     List<FeedEntity> freshEntities = dao.getFeedItems(count);

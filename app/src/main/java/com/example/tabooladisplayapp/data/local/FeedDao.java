@@ -12,7 +12,7 @@ public interface FeedDao {
     @Query("SELECT * FROM feed_items LIMIT :limit")
     List<FeedEntity> getFeedItems(int limit);
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insertAll(List<FeedEntity> items);
 
     @Query("DELETE FROM feed_items")

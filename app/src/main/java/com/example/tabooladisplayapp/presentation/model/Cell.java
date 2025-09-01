@@ -1,14 +1,16 @@
 package com.example.tabooladisplayapp.presentation.model;
 
-public abstract class Cell {
-    private final int type;
+import com.example.tabooladisplayapp.presentation.main.CellViewType;
 
-    protected Cell(int type) {
+public abstract class Cell {
+    private final CellViewType type;
+
+    protected Cell(CellViewType type) {
         this.type = type;
     }
 
     public int getType() {
-        return type;
+        return type.getValue();
     }
 
     public static class DataCell extends Cell {
@@ -17,7 +19,7 @@ public abstract class Cell {
         private final String thumbnailUrl;
 
         public DataCell(String name, String description, String thumbnailUrl) {
-            super(0);
+            super(CellViewType.DATA);
             this.name = name;
             this.description = description;
             this.thumbnailUrl = thumbnailUrl;
@@ -30,7 +32,19 @@ public abstract class Cell {
 
     public static class EmptyCell extends Cell {
         public EmptyCell() {
-            super(1);
+            super(CellViewType.EMPTY);
+        }
+    }
+
+    public static class TaboolaWidgetCell extends Cell {
+        public TaboolaWidgetCell() {
+            super(CellViewType.TABOOLA_WIDGET);
+        }
+    }
+
+    public static class TaboolaFeedCell extends Cell {
+        public TaboolaFeedCell() {
+            super(CellViewType.TABOOLA_WIDGET_FEED);
         }
     }
 }

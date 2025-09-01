@@ -13,7 +13,6 @@ import dagger.hilt.android.AndroidEntryPoint;
 @AndroidEntryPoint
 public class MainActivity extends ComponentActivity {
     private ActivityMainBinding binding;
-    private FeedViewModel viewModel;
     private FeedAdapter adapter;
 
     @Override
@@ -33,7 +32,7 @@ public class MainActivity extends ComponentActivity {
     }
 
     private void setupViewModel() {
-        viewModel = new ViewModelProvider(this).get(FeedViewModel.class);
+        FeedViewModel viewModel = new ViewModelProvider(this).get(FeedViewModel.class);
         viewModel.getUiState().observe(this, state -> {
             if (state.isLoading()) {
                 binding.shimmerView.setVisibility(View.VISIBLE);

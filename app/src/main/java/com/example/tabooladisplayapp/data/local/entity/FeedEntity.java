@@ -1,27 +1,29 @@
 package com.example.tabooladisplayapp.data.local.entity;
 
 import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "feed_items")
 public class FeedEntity {
-    @PrimaryKey
-    @NonNull
-    private String key;
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "id")
+    private long id;
     private String name;
     private String description;
     private String thumbnailUrl;
 
-    public FeedEntity(@NonNull String key, String name, String description, String thumbnailUrl) {
-        this.key = key;
+    public FeedEntity(String name, String description, String thumbnailUrl) {
         this.name = name;
         this.description = description;
         this.thumbnailUrl = thumbnailUrl;
     }
 
-    @NonNull
-    public String getKey() { return key; }
+    public long getId() { return id; }
+    public void setId(long id) {
+        this.id = id;
+    }
     public String getName() { return name; }
     public String getDescription() { return description; }
     public String getThumbnailUrl() { return thumbnailUrl; }

@@ -11,11 +11,11 @@ public class DisplayListBuilderTest {
     public void testBuildList_EmptyAtCorrectPositions() {
         DisplayListBuilder builder = new DisplayListBuilder();
         List<FeedItem> items = Arrays.asList(
-            new FeedItem("1", "Item 1", "Desc 1", "url1"),
-            new FeedItem("2", "Item 2", "Desc 2", "url2"),
-            new FeedItem("3", "Item 3", "Desc 3", "url3"),
-            new FeedItem("4", "Item 4", "Desc 4", "url4"),
-            new FeedItem("5", "Item 5", "Desc 5", "url5")
+            new FeedItem(1L, "Item 1", "Desc 1", "url1"),
+            new FeedItem(2L, "Item 2", "Desc 2", "url2"),
+            new FeedItem(3L, "Item 3", "Desc 3", "url3"),
+            new FeedItem(4L, "Item 4", "Desc 4", "url4"),
+            new FeedItem(5L, "Item 5", "Desc 5", "url5")
         );
 
         List<Cell> result = builder.build(items);

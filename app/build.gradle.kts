@@ -110,4 +110,7 @@ dependencies {
 
     // Testing
     testImplementation("junit:junit:4.13.2")
+
+    implementation("com.taboola:android-sdk:4.0.9")
+    implementation("androidx.browser:browser:1.8.0")
 }
