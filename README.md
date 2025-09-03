@@ -39,7 +39,7 @@ By using both mechanisms, the app achieves:
 ## Getting Started
 1. Clone the repository:
    ```
-   git clone <your-repo-url>
+   
    ```
 2. Open the project in Android Studio.
 3. Build and run the app on your device or emulator.
