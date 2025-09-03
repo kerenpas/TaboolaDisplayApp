@@ -9,6 +9,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.rxjava3.core.Observable;
+
 public class ObserveCellsColorAndVisibilityUseCase {
     private final CellColorRepository repo;
 
@@ -17,7 +19,7 @@ public class ObserveCellsColorAndVisibilityUseCase {
         this.repo = repo;
     }
 
-    public LiveData<List<CellColorUpdate>> execute() {
+    public Observable<List<CellColorUpdate>> execute() {
         return repo.observeCells();
     }
 }

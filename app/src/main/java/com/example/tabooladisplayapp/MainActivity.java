@@ -42,6 +42,14 @@ public class MainActivity extends ComponentActivity {
                 binding.recyclerView.setVisibility(View.VISIBLE);
                 if (state.getCells() != null) {
                     adapter.submitList(state.getCells());
+                    //TODO: check if needed and use more specific methods for better performance
+              /*      notifyItemChanged(int),
+                    notifyItemInserted(int),
+                    notifyItemRemoved(int),
+                    notifyItemRangeChanged(int, int),
+                    notifyItemRangeInserted(int, int),
+                    notifyItemRangeRemoved(int, int)*/
+                    adapter.notifyDataSetChanged();
                 }
                 // Could handle error state here if needed
             }

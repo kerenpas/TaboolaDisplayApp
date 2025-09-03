@@ -36,9 +36,17 @@ public class CellColorService extends Service {
             }
 
             try {
-                final int color = Color.parseColor(colorHex);
+
+                final int color;
+                int color1;
+                try {
+                      color1 = Color.parseColor(colorHex);
+                }catch (IllegalArgumentException e) {
+                    color1 = Color.WHITE; // fallback
+                }
 
                 // Launch a new thread to perform the update operation
+                color = color1;
                 new Thread(() -> {
                     try {
                         updateCellColorUseCase.invoke(isVisible, position, color);

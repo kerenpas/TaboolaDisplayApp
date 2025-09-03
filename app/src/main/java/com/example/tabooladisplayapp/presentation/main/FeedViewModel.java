@@ -21,17 +21,19 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+
 @HiltViewModel
 public class FeedViewModel extends ViewModel {
     private final GetFeedUseCase getFeedUseCase;
     private final ObserveCellsColorAndVisibilityUseCase observePatchesUseCase;
     private final DisplayListBuilder displayListBuilder;
-
-    private final MediatorLiveData<UiState> uiState = new MediatorLiveData<>(UiState.loading());
-    private final MutableLiveData<List<Cell>> baseCells = new MutableLiveData<>();
+    private final MutableLiveData<UiState> _uiState = new MutableLiveData<>(UiState.loading());
+    private final CompositeDisposable disposables = new CompositeDisposable();
 
     public LiveData<UiState> getUiState() {
-        return uiState;
+        return _uiState;
     }
 
     @Inject
@@ -39,17 +41,21 @@ public class FeedViewModel extends ViewModel {
         this.getFeedUseCase = getFeedUseCase;
         this.observePatchesUseCase = observePatchesUseCase1;
         this.displayListBuilder = new DisplayListBuilder();
-        uiState.addSource(baseCells, cells -> {
-            if (cells != null) {
-                uiState.setValue(UiState.success(cells));
-            }
-        });
         loadFeed();
-        LiveData<List<CellColorUpdate>> patchLive = observePatchesUseCase.execute();
-        uiState.addSource(patchLive, updates -> {
-            if (updates == null || updates.isEmpty()) return;
-            applyColorVisibilityUpdates(updates);
-        });
+        disposables.add(
+            observePatchesUseCase.execute()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                    updates -> {
+                        if (updates == null || updates.isEmpty()) return;
+                        applyColorVisibilityUpdates(updates);
+                    },
+                    throwable -> {
+                        // Log or handle the error
+                        // Example: Log.e("FeedViewModel", "Error observing cell color updates", throwable);
+                    }
+                )
+        );
     }
 
     private void loadFeed() {
@@ -57,12 +63,12 @@ public class FeedViewModel extends ViewModel {
             @Override
             public void onSuccess(List<FeedItem> value) {
                 List<Cell> cells = displayListBuilder.build(value);
-                baseCells.setValue(cells);
+                _uiState.setValue(UiState.success(cells));
             }
 
             @Override
             public void onError(Throwable error) {
-                uiState.setValue(UiState.error(error.getMessage()));
+                _uiState.setValue(UiState.error(error.getMessage()));
             }
         });
     }
@@ -70,10 +76,10 @@ public class FeedViewModel extends ViewModel {
 
     private void applyColorVisibilityUpdates(List<CellColorUpdate> updates) {
         // 1) get the current list we’re showing
-        UiState currentState = uiState.getValue();
+        UiState currentState = _uiState.getValue();
         List<Cell> current = (currentState != null && currentState.getCells() != null)
                 ? currentState.getCells()
-                : baseCells.getValue();
+                : new ArrayList<>();
 
         if (current == null || current.isEmpty()) return;
 
@@ -85,34 +91,36 @@ public class FeedViewModel extends ViewModel {
             oldCell.setBackgroundColor(update.getColor());
             oldCell.setVisible(update.isVisable());
         }
-        uiState.setValue(UiState.success(java.util.Collections.unmodifiableList(current)));
+        _uiState.setValue(UiState.success(java.util.Collections.unmodifiableList(current)));
+    }
+
+    @Override
+    protected void onCleared() {
+        disposables.clear();
+        super.onCleared();
     }
 
     public static class UiState {
         private final boolean loading;
         private final List<Cell> cells;
-
-
-        private final Map<Integer, Integer> cellColors;
         private final String error;
 
-        private UiState(boolean loading, List<Cell> cells, Map<Integer, Integer> cellColors, String error) {
+        private UiState(boolean loading, List<Cell> cells, String error) {
             this.loading = loading;
             this.cells = cells;
-            this.cellColors = cellColors;
             this.error = error;
         }
 
         public static UiState loading() {
-            return new UiState(true, null, null, null);
+            return new UiState(true, null, null);
         }
 
         public static UiState success(List<Cell> cells) {
-            return new UiState(false, cells, null, null);
+            return new UiState(false, cells, null);
         }
 
         public static UiState error(String error) {
-            return new UiState(false, null,null, error);
+            return new UiState(false, null, error);
         }
 
         public boolean isLoading() { return loading; }

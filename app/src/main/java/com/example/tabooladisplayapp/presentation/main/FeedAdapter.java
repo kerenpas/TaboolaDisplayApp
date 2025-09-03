@@ -1,11 +1,14 @@
 package com.example.tabooladisplayapp.presentation.main;
 
+import static android.view.View.GONE;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.IdRes;
@@ -144,7 +147,7 @@ public class FeedAdapter extends ListAdapter<Cell, RecyclerView.ViewHolder> {
                 // No binding needed for empty view
             }
             case TABOOLA_WIDGET, TABOOLA_WIDGET_FEED -> {
-                ((TaboolaViewHolder) holder).bind();
+                ((TaboolaViewHolder) holder).bind(item);
             }
         }
     }
@@ -154,15 +157,25 @@ public class FeedAdapter extends ListAdapter<Cell, RecyclerView.ViewHolder> {
         private final ImageView imageView;
         private final TextView titleView;
         private final TextView descriptionView;
+        private final LinearLayout container;
+
+
 
         DataViewHolder(@NonNull View itemView) {
             super(itemView);
+            container = itemView.findViewById(R.id.container);
             imageView = itemView.findViewById(R.id.imageView);
             titleView = itemView.findViewById(R.id.titleView);
             descriptionView = itemView.findViewById(R.id.descriptionView);
         }
 
         void bind(Cell.DataCell item) {
+            container.setBackgroundColor(item.getBackgroundColor());
+            if (!item.isVisible())
+                container.setVisibility(GONE);
+            else {
+                container.setVisibility(View.VISIBLE);
+            }
             titleView.setText(item.getName());
             descriptionView.setText(item.getDescription());
             Glide.with(imageView)
@@ -199,9 +212,15 @@ public class FeedAdapter extends ListAdapter<Cell, RecyclerView.ViewHolder> {
                     .setTargetType("mix");
         }
 
-        void bind() {
+        void bind(Cell item) {
             if (!loaded) {
                 classicUnit.fetchContent();
+                container.setBackgroundColor(item.getBackgroundColor());
+                if (!item.isVisible())
+                    container.setVisibility(GONE);
+                else {
+                    container.setVisibility(View.VISIBLE);
+                }
                 loaded = true;
             }
         }

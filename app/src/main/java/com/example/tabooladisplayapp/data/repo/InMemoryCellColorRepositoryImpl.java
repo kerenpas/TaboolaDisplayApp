@@ -1,7 +1,6 @@
 package com.example.tabooladisplayapp.data.repo;
 
 
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import java.util.ArrayList;
@@ -21,10 +20,12 @@ import com.example.tabooladisplayapp.domain.model.CellColorUpdate;
 import com.example.tabooladisplayapp.di.IoExecutor;
 import com.example.tabooladisplayapp.domain.repository.CellColorRepository;
 
+import io.reactivex.rxjava3.subjects.BehaviorSubject;
+import io.reactivex.rxjava3.core.Observable;
+
 @Singleton
 public class InMemoryCellColorRepositoryImpl implements CellColorRepository {
-    private final MutableLiveData<List<CellColorUpdate>> cellsLive = new MutableLiveData<>(new ArrayList<>());
-    private final LiveData<List<CellColorUpdate>> _cellsList = cellsLive;
+    private final BehaviorSubject<List<CellColorUpdate>> cellsSubject = BehaviorSubject.create();
     private final Executor io;
     private final Handler main = new Handler(Looper.getMainLooper());
 
@@ -33,18 +34,18 @@ public class InMemoryCellColorRepositoryImpl implements CellColorRepository {
         this.io = io;
         List<CellColorUpdate> seed = new ArrayList<>();
         for (int i = 0; i < 10; i++) seed.add(new CellColorUpdate(i, 0x00000000)); // transparent
-        cellsLive.setValue(seed);
+        cellsSubject.onNext(Collections.unmodifiableList(seed));
     }
 
     @Override
-    public LiveData<List<CellColorUpdate>> observeCells() {
-        return _cellsList;
+    public Observable<List<CellColorUpdate>> observeCells() {
+        return cellsSubject.hide();
     }
 
     @Override
     public void updateCellColor(CellColorUpdate update) {
         io.execute(() -> {
-            List<CellColorUpdate> current = cellsLive.getValue();
+            List<CellColorUpdate> current = cellsSubject.getValue();
             if (current == null) return;
 
             List<CellColorUpdate> updated = new ArrayList<>(current);
@@ -54,8 +55,8 @@ public class InMemoryCellColorRepositoryImpl implements CellColorRepository {
             }
             updated.set(update.getPosition(), update);
 
-            // post on main for LiveData
-            main.post(() -> cellsLive.setValue(Collections.unmodifiableList(updated)));
+            // post on main for thread safety
+            main.post(() -> cellsSubject.onNext(Collections.unmodifiableList(updated)));
         });
     }
 

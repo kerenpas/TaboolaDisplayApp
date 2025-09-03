@@ -125,4 +125,7 @@ dependencies {
 
     implementation("com.taboola:android-sdk:4.0.9")
     implementation("androidx.browser:browser:1.8.0")
+
+    implementation("io.reactivex.rxjava3:rxjava:3.1.8")
+    implementation("io.reactivex.rxjava3:rxandroid:3.0.2")
 }
