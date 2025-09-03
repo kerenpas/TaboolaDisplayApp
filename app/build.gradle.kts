@@ -27,6 +27,18 @@ android {
                 )
             }
         }
+        buildTypes {
+            debug {
+                buildConfigField("String", "SECURITY_TOKEN", "\"TABOOLA_DEMO_CTRL_COLOR_V1\"")
+            }
+            release {
+                buildConfigField("String", "SECURITY_TOKEN", "\"TABOOLA_DEMO_CTRL_COLOR_V1\"")
+            }
+        }
+        buildFeatures {
+            aidl = true
+            buildConfig = true
+        }
     }
 
     buildTypes {

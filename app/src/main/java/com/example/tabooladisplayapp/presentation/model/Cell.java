@@ -1,9 +1,14 @@
 package com.example.tabooladisplayapp.presentation.model;
 
+import android.graphics.Color;
+
 import com.example.tabooladisplayapp.presentation.main.CellViewType;
 
 public abstract class Cell {
     private final CellViewType type;
+    private int backgroundColor = Color.TRANSPARENT;
+
+    private boolean visible = true;
 
     protected Cell(CellViewType type) {
         this.type = type;
@@ -11,6 +16,17 @@ public abstract class Cell {
 
     public int getType() {
         return type.getValue();
+    }
+
+    public int getBackgroundColor() { return backgroundColor; }
+    public void setBackgroundColor(int color) { this.backgroundColor = color; }
+
+    public boolean isVisible() {
+        return visible;
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
     }
 
     public static class DataCell extends Cell {

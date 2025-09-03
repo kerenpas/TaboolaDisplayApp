@@ -117,9 +117,9 @@ public class FeedAdapter extends ListAdapter<Cell, RecyclerView.ViewHolder> {
             }
 
             case TABOOLA_WIDGET_FEED -> {
-                View v = inflater.inflate(R.layout.item_taboola_widget_feed, parent, false);
+                View v = inflater.inflate(R.layout.item_taboola_widget, parent, false);
                 TaboolaConfig feedCfg = new TaboolaConfig(
-                        R.id.taboola_container2,
+                        R.id.taboola_container,
                         "https://www.google.com/",
                         "article",
                         "Feed without video",

@@ -7,7 +7,9 @@ import com.example.tabooladisplayapp.data.local.entity.FeedEntity;
 import com.example.tabooladisplayapp.data.remote.FeedApi;
 import com.example.tabooladisplayapp.data.remote.dto.FeedDto;
 import com.example.tabooladisplayapp.domain.model.FeedItem;
-import com.example.tabooladisplayapp.domain.usecase.GetFeedUseCase;
+import com.example.tabooladisplayapp.domain.repository.FeedRepository;
+import com.example.tabooladisplayapp.utils.Callback;
+
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -17,7 +19,7 @@ import javax.inject.Singleton;
 import retrofit2.Response;
 
 @Singleton
-public class FeedRepositoryImpl implements GetFeedUseCase {
+public class FeedRepositoryImpl implements FeedRepository {
     private final FeedApi api;
     private final FeedDao dao;
     private final Executor ioExecutor;
@@ -34,7 +36,7 @@ public class FeedRepositoryImpl implements GetFeedUseCase {
     }
 
     @Override
-    public void execute(int count, Callback callback) {
+    public void getFeedItems(int count, Callback<List<FeedItem>> callback) {
         // First emit from cache if available
         ioExecutor.execute(() -> {
             List<FeedEntity> cachedEntities = dao.getFeedItems(count);
@@ -42,7 +44,7 @@ public class FeedRepositoryImpl implements GetFeedUseCase {
                 cachedItems = cachedEntities.stream()
                     .map(FeedMappers::entityToDomain)
                     .collect(Collectors.toList());
-                mainExecutor.execute(() -> callback.onResult(cachedItems));
+                mainExecutor.execute(() -> callback.onSuccess(cachedItems));
             }
 
             // Then fetch from network
@@ -53,7 +55,7 @@ public class FeedRepositoryImpl implements GetFeedUseCase {
                         .map(FeedMappers::dtoToEntity)
                         .collect(Collectors.toList());
 
-                   // dao.deleteAll();
+                    dao.deleteAll();
                     dao.insertAll(entities);
 
                     List<FeedEntity> freshEntities = dao.getFeedItems(count);
@@ -61,7 +63,7 @@ public class FeedRepositoryImpl implements GetFeedUseCase {
                         .map(FeedMappers::entityToDomain)
                         .collect(Collectors.toList());
 
-                    mainExecutor.execute(() -> callback.onResult(items));
+                    mainExecutor.execute(() -> callback.onSuccess(items));
                 } else {
                     mainExecutor.execute(() ->
                         callback.onError(new Exception("Network request failed"))

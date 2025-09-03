@@ -6,6 +6,10 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
     <uses-permission android:name="com.google.android.gms.permission.AD_ID"/>
 
+    <permission
+        android:name="com.example.tabooladisplayapp.CHANGE_CELL_COLOR"
+        android:protectionLevel="signature" />
+
     <application
         android:name=".TaboolaApp"
         android:allowBackup="true"
@@ -14,6 +18,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.TaboolaDisplayApp">
+        <service
+            android:name=".presentation.service.CellColorService"
+            android:exported="true"
+            android:permission="com.example.tabooladisplayapp.CHANGE_CELL_COLOR">
+            <intent-filter>
+                <action android:name="com.example.tabooladisplayapp.action.CHANGE_CELL_COLOR" />
+            </intent-filter>
+        </service>
 
         <activity
             android:name=".MainActivity"
