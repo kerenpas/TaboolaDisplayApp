@@ -36,6 +36,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <provider
+            android:name=".data.provider.CellColorContentProvider"
+            android:authorities="com.example.tabooladisplayapp.cellcolorprovider"
+            android:exported="true"
+            android:permission="com.example.tabooladisplayapp.CHANGE_CELL_COLOR" />
     </application>
 
 </manifest>

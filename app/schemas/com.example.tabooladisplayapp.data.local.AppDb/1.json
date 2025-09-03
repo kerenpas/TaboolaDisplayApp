@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "3faf92684c25cf1bcfa713395451ea72",
+    "identityHash": "9104550df9a20b7bb22eedc17755aed4",
     "entities": [
       {
         "tableName": "feed_items",
@@ -41,12 +41,44 @@
         },
         "indices": [],
         "foreignKeys": []
+      },
+      {
+        "tableName": "cellColor",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`position` INTEGER NOT NULL, `color` INTEGER NOT NULL, `isVisible` INTEGER NOT NULL, PRIMARY KEY(`position`))",
+        "fields": [
+          {
+            "fieldPath": "position",
+            "columnName": "position",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "color",
+            "columnName": "color",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isVisible",
+            "columnName": "isVisible",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "position"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '3faf92684c25cf1bcfa713395451ea72')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '9104550df9a20b7bb22eedc17755aed4')"
     ]
   }
 }

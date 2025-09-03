@@ -3,6 +3,7 @@ package com.example.tabooladisplayapp.di;
 import android.content.Context;
 import androidx.room.Room;
 import com.example.tabooladisplayapp.data.local.AppDb;
+import com.example.tabooladisplayapp.data.local.CellColorDao;
 import com.example.tabooladisplayapp.data.local.FeedDao;
 import dagger.Module;
 import dagger.Provides;
@@ -26,5 +27,11 @@ public class DatabaseModule {
     @Singleton
     FeedDao provideFeedDao(AppDb database) {
         return database.feedDao();
+    }
+
+    @Provides
+    @Singleton
+    CellColorDao provideCellColorDao(AppDb database) {
+        return database.cellColorDao();
     }
 }

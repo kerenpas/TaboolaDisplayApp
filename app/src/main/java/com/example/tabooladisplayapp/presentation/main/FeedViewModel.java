@@ -1,7 +1,8 @@
 package com.example.tabooladisplayapp.presentation.main;
 
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -17,7 +18,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -31,6 +31,8 @@ public class FeedViewModel extends ViewModel {
     private final DisplayListBuilder displayListBuilder;
     private final MutableLiveData<UiState> _uiState = new MutableLiveData<>(UiState.loading());
     private final CompositeDisposable disposables = new CompositeDisposable();
+
+    private List<CellColorUpdate> cellColorUpdateList = new ArrayList<>();
 
     public LiveData<UiState> getUiState() {
         return _uiState;
@@ -48,6 +50,7 @@ public class FeedViewModel extends ViewModel {
                 .subscribe(
                     updates -> {
                         if (updates == null || updates.isEmpty()) return;
+                        cellColorUpdateList = updates;
                         applyColorVisibilityUpdates(updates);
                     },
                     throwable -> {
@@ -63,7 +66,9 @@ public class FeedViewModel extends ViewModel {
             @Override
             public void onSuccess(List<FeedItem> value) {
                 List<Cell> cells = displayListBuilder.build(value);
+                Log.d("FeedViewModel", "Updated cells: line 66 " + cells.size());
                 _uiState.setValue(UiState.success(cells));
+                applyColorVisibilityUpdates(cellColorUpdateList);
             }
 
             @Override
@@ -89,8 +94,9 @@ public class FeedViewModel extends ViewModel {
             }
             Cell oldCell = current.get(update.getPosition());
             oldCell.setBackgroundColor(update.getColor());
-            oldCell.setVisible(update.isVisable());
+            oldCell.setVisible(update.isVisible());
         }
+        Log.d("FeedViewModel", "Updated cells: line 95 " + updates.size());
         _uiState.setValue(UiState.success(java.util.Collections.unmodifiableList(current)));
     }
 

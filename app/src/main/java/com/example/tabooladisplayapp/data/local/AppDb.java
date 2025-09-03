@@ -4,7 +4,8 @@ import androidx.room.Database;
 import androidx.room.RoomDatabase;
 import com.example.tabooladisplayapp.data.local.entity.FeedEntity;
 
-@Database(entities = {FeedEntity.class}, version = 1)
+@Database(entities = {FeedEntity.class, CellColorEntity.class}, version = 1)
 public abstract class AppDb extends RoomDatabase {
     public abstract FeedDao feedDao();
+    public abstract CellColorDao cellColorDao();
 }
