@@ -17,7 +17,7 @@ TaboolaDisplayApp is an Android application designed to display and manage a gri
 - **UI Layer**: Observes cell state changes via LiveData/RxJava from the repository.
 - **Repository Layer**: Handles updates from both the AIDL service and ContentProvider, synchronizing with the Room database and in-memory cache.
 - **ContentProvider**: Allows external apps to update cell states by writing to the database. When TaboolaDisplayApp restarts, it loads the latest cell states from the database and updates the UI.
-- **AIDL Service**: Enables real-time updates to the UI by directly invoking repository methods when the app is running.
+- **AIDL Service**: AIDL Service: Facilitates real-time UI updates by enabling inter-process communication (IPC). This allows a separate service process to invoke repository methods  via the domain use case (updateCellColorUseCase) and notify the main application UI of data changes
 
 ## Why Use Both AIDL Service and ContentProvider?
 
